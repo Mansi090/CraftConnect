@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: craftconnect-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: craftconnect
+      POSTGRES_PASSWORD: localdev
+      POSTGRES_DB: craftconnect
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U craftconnect -d craftconnect"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  pgdata:
