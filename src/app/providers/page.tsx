@@ -1,24 +1,63 @@
 import type { Metadata } from "next";
-import { ProviderList } from "@/features/providers/components/ProviderList";
-import { providers } from "@/features/providers/mock-data";
+import { Container } from "@/components/ui/Container";
+import { ProviderList, searchProviders } from "@/features/providers";
 
 export const metadata: Metadata = {
-  title: "Providers | CraftConnect",
-  description: "Browse artisans and manufacturers taking custom orders.",
+  title: "Browse providers",
+  description: "Verified artisans and manufacturers taking custom orders.",
 };
 
-export default function ProvidersPage() {
+export default async function ProvidersPage({
+  searchParams,
+}: PageProps<"/providers">) {
+  const { q } = await searchParams;
+  const query = typeof q === "string" ? q : undefined;
+  const results = searchProviders(query);
+
   return (
-    <main className="mx-auto max-w-5xl px-4 py-10">
-      <h1 className="text-2xl font-semibold">Providers</h1>
+    <main>
+      <Container className="py-14">
+        <h1 className="text-3xl font-semibold tracking-tight">Providers</h1>
 
-      <p className="mt-1 text-sm text-black/60 dark:text-white/60">
-        {providers.length} artisans taking custom orders
-      </p>
+        <form
+          action="/providers"
+          className="mt-6 flex flex-col gap-3 sm:flex-row"
+        >
+          <label htmlFor="provider-search" className="sr-only">
+            Search providers
+          </label>
+          <input
+            id="provider-search"
+            name="q"
+            type="search"
+            defaultValue={query ?? ""}
+            placeholder="Search by name, craft, city or speciality"
+            className="border-border bg-card placeholder:text-muted focus-visible:ring-accent flex-1 rounded-lg border px-4 py-2.5 text-sm outline-none focus-visible:ring-2"
+          />
+          <button
+            type="submit"
+            className="bg-accent text-accent-foreground rounded-lg px-5 py-2.5 text-sm font-medium transition-opacity hover:opacity-90"
+          >
+            Search
+          </button>
+        </form>
 
-      <div className="mt-8">
-        <ProviderList providers={providers} />
-      </div>
+        <p className="text-muted mt-6 text-sm" aria-live="polite">
+          {results.length} {results.length === 1 ? "provider" : "providers"}
+          {query ? ` matching “${query}”` : " taking custom orders"}
+        </p>
+
+        <div className="mt-6">
+          <ProviderList
+            providers={results}
+            emptyMessage={
+              query
+                ? `No providers matched “${query}”. Try a craft, city or material.`
+                : "No providers yet."
+            }
+          />
+        </div>
+      </Container>
     </main>
   );
 }
