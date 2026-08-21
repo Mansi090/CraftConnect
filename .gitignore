@@ -47,3 +47,20 @@ next-env.d.ts
 
 # Prisma generated client
 /src/generated
+
+# Scratch/work data files — not part of this project
+/after.json
+/one.json
+/two.json
+/three.json
+/four.json
+/five.json
+/six.json
+/ladle.json
+/ladle_operators_patched.json
+/metal.json
+/mould_pouring.json
+/poring_logsheet.json
+/preview.json
+/preview.jinja2
+/stream_in.json
